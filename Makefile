@@ -1,30 +1,42 @@
-CC = g++
-CFLAGS = -fPIC -Wall
-LIB_NAME = Deck
-CFLAGS = -Iinclude -fPIC
-LFLAGS = -Llib -l$(LIB_NAME) -Wl,-rpath,\$$ORIGIN/../lib
+CC     = g++
+STANDARD_FLAGS = -std=c++11\
+	 -pedantic-errors\
+	 -Wall\
+	 -Wextra\
+	 -Werror\
+	 -Wconversion
+DEBUG_FLAGS = -g3
+OPT_FLAGS = -O0
+NO_LINKER_FLAGS = -c
+CCFLAGS = $(OPT_FLAGS) $(DEBUG_FLAGS) $(NO_LINKER_FLAGS) $(STANDARD_FLAGS)
 
-EXE_SRC_FILES = $(wildcard *.cc)
-EXECUTABLES = $(patsubst %.cc,bin/%,$(EXE_SRC_FILES))
-SRC_FILES = $(wildcard src/*.cc)
-O_FILES = $(patsubst %.cc,build/%.o,$(SRC_FILES))
+ROOT = $(CURDIR)
+INCLUDES = -I$(ROOT)/src -I$(ROOT)/api
 
-all: $(EXECUTABLES) lib/lib$(LIB_NAME).so
+SRCS = ./src/Card.cc\
+       ./src/Deck.cc
 
-bin/%: build/%.o | lib/lib$(LIB_NAME).so
+OBJS = ./build/Card.o\
+       ./build/Deck.o
+
+VPATH = src
+BUILDDIR = build
+
+LIBS = 
+MAIN = libStandardDeck.a
+
+all:	$(MAIN)
+	@echo $(MAIN) has been compiled!
+
+$(MAIN): $(OBJS)
+	ar -r $(MAIN) $(OBJS) $(LIBS)
+
+$(BUILDDIR)/%.o: %.cc
 	mkdir -p $(@D)
-	g++ $< $(LFLAGS) -o $@
+	$(CC) $(CCFLAGS) $(INCLUDES) -c $< -o $@
 
-lib/lib$(LIB_NAME).so: $(O_FILES)
-	mkdir -p $(@D)
-	g++ $^ -shared -Wl,-soname,lib$(LIB_NAME).so -o $@
-
-build/%.o: %.cc
-	mkdir -p $(@D)
-	g++ -c $(CFLAGS) $< -o $@
+depend: $(SRCS)
+	makedepend $(INCLUDES) $^
 
 clean:
-	rm -rf bin build lib
-
-CFLAGS += -MMD
--include $(shell find build -name "*.d" 2> /dev/null)
+	rm -r build *.a

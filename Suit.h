@@ -1,12 +1,17 @@
-#include "Suit.h"
-Suit::Suit() {
-}
+#ifndef Suit_H
+#define Suit_H
 
-Suit::~Suit() {
-}
-#include "Suit.h"
-Suit::Suit() {
-}
+#include <string>
 
-Suit::~Suit() {
-}
+class Suit {
+	public:
+		Suit();
+		~Suit();
+
+		std::string *getSuit(int id);
+
+	private:
+		std::string _suit;
+};
+
+#endif

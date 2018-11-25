@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall
 LDFLAGS = 
-OBJFILES = Suit.o Card.o main.o 
+OBJFILES = Card.o Deck.o main.o
 TARGET = main
 
 all: $(TARGET)

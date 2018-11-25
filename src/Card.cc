@@ -1,4 +1,5 @@
 #include "Card.h"
+
 Card::Card(int suit, int value) {
 	_suit = suit;
 	_value = value;

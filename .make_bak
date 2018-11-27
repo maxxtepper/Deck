@@ -1,6 +1,5 @@
 CC     = g++
 STANDARD_FLAGS = -std=c++11\
-	 -fPIC\
 	 -pedantic-errors\
 	 -Wall\
 	 -Wextra\
@@ -24,13 +23,13 @@ VPATH = src
 BUILDDIR = build
 
 LIBS = 
-MAIN = libStandardDeck.so
+MAIN = libStandardDeck.a
 
 all:	$(MAIN)
 	@echo $(MAIN) has been compiled!
 
 $(MAIN): $(OBJS)
-	$(CC) $(OBJS) -shared -o $(MAIN) 
+	ar -r $(MAIN) $(OBJS) $(LIBS)
 
 $(BUILDDIR)/%.o: %.cc
 	mkdir -p $(@D)
@@ -40,4 +39,4 @@ depend: $(SRCS)
 	makedepend $(INCLUDES) $^
 
 clean:
-	rm -r build *.so
+	rm -r build *.a
